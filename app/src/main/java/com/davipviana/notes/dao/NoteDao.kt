@@ -3,14 +3,14 @@ package com.davipviana.notes.dao
 import com.davipviana.notes.model.Note
 import java.util.*
 
-class NoteDao() {
+class NoteDao {
 
     fun getAll(): List<Note> {
-        return notes.clone() as List<Note>
+        return notes
     }
 
-    fun insert(vararg notes: Note) {
-        NoteDao.notes += Arrays.asList(notes) as ArrayList<Note>
+    fun insert(note: Note) {
+        NoteDao.notes +=  note
     }
 
     fun update(position: Int, note: Note) {

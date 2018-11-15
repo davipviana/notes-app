@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import com.davipviana.notes.R
 import com.davipviana.notes.model.Note
 
@@ -24,15 +25,15 @@ class NotesAdapter(private val context: Context, private val notes: List<Note>) 
         return 0
     }
 
-    override fun getView(position: Int, view: View, viewGroup: ViewGroup): View {
+    override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
         val viewItem = LayoutInflater.from(context).inflate(R.layout.notes_item, viewGroup, false)
         val note = notes[position]
 
-        val titleText = viewItem.findViewById<EditText>(R.id.notes_item_title)
-        titleText.setText(note.title)
+        val titleText = viewItem.findViewById<TextView>(R.id.notes_item_title)
+        titleText.text = note.title
 
-        val descriptionText = viewItem.findViewById<EditText>(R.id.notes_item_description)
-        descriptionText.setText(note.description)
+        val descriptionText = viewItem.findViewById<TextView>(R.id.notes_item_description)
+        descriptionText.text = note.description
 
         return viewItem
     }

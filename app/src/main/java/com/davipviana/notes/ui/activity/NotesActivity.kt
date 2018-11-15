@@ -14,7 +14,7 @@ class NotesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        val notesListView = findViewById<ListView>(R.id.listView)
+        val notesListView = findViewById<ListView>(R.id.notes_list)
 
         val noteDao = NoteDao()
         noteDao.insert(Note("Primeira nota", "Primeira descrição"))
