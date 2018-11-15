@@ -1,3 +1,5 @@
 package com.davipviana.notes.model
 
-class Note(val title: String, val description: String)
+import java.io.Serializable
+
+class Note(val title: String, val description: String) : Serializable

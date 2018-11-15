@@ -27,17 +27,21 @@ class NotesActivity : AppCompatActivity() {
         initializeNewNoteClick()
     }
 
-    override fun onResume() {
-        notes.clear()
-        notes.addAll(NoteDao().getAll())
-        adapter.notifyDataSetChanged()
-        super.onResume()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == 1 && resultCode == 2 && data != null && data.hasExtra("note")) {
+            val newNote = data.getSerializableExtra("note") as Note
+
+            NoteDao().insert(newNote)
+            adapter.add(newNote)
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun initializeNewNoteClick() {
         val newNoteTextView = findViewById<TextView>(R.id.notes_new_note)
         newNoteTextView.setOnClickListener {
-            startActivity(Intent(this, NoteFormActivity::class.java))
+            startActivityForResult(Intent(this, NoteFormActivity::class.java), 1)
         }
     }
 
@@ -49,7 +53,7 @@ class NotesActivity : AppCompatActivity() {
 
 
 
-    private fun initializeNotesRecyclerView(notes: List<Note>) {
+    private fun initializeNotesRecyclerView(notes: ArrayList<Note>) {
         val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
 
         adapter = NotesAdapter(this, notes)

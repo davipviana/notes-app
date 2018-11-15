@@ -11,7 +11,7 @@ import com.davipviana.notes.model.Note
 
 class NotesAdapter(
     val context: Context,
-    val notes: List<Note>
+    val notes: ArrayList<Note>
 ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -37,5 +37,10 @@ class NotesAdapter(
             titleTextView.text = note.title
             descriptionTextView.text = note.description
         }
+    }
+
+    fun add(note: Note) {
+        notes.add(note)
+        notifyDataSetChanged()
     }
 }

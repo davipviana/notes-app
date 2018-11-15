@@ -1,5 +1,6 @@
 package com.davipviana.notes.ui.activity
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -28,7 +29,12 @@ class NoteFormActivity : AppCompatActivity() {
             val titleEditText = findViewById<EditText>(R.id.note_form_title)
             val descriptionEditText = findViewById<EditText>(R.id.note_form_description)
 
-            NoteDao().insert(Note(titleEditText.text.toString(), descriptionEditText.text.toString()))
+            val newNote = Note(titleEditText.text.toString(), descriptionEditText.text.toString())
+            val insertResult = Intent()
+            insertResult.putExtra("note", newNote)
+
+            setResult(2, insertResult)
+
             finish()
         }
 
