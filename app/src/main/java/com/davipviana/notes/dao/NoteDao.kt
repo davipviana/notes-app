@@ -5,8 +5,8 @@ import java.util.*
 
 class NoteDao {
 
-    fun getAll(): List<Note> {
-        return notes
+    fun getAll(): ArrayList<Note> {
+        return notes.clone() as ArrayList<Note>
     }
 
     fun insert(note: Note) {

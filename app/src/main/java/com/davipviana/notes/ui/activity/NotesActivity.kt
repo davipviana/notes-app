@@ -12,17 +12,25 @@ import com.davipviana.notes.ui.recyclerview.adapter.NotesAdapter
 
 class NotesActivity : AppCompatActivity() {
 
+    private lateinit var adapter: NotesAdapter
+
+    private lateinit var notes: ArrayList<Note>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        initializeNotesRecyclerView(getExampleNotes())
+        notes = getExampleNotes()
+
+        initializeNotesRecyclerView(notes)
 
         initializeNewNoteClick()
     }
 
     override fun onResume() {
-        initializeNotesRecyclerView(NoteDao().getAll())
+        notes.clear()
+        notes.addAll(NoteDao().getAll())
+        adapter.notifyDataSetChanged()
         super.onResume()
     }
 
@@ -33,14 +41,19 @@ class NotesActivity : AppCompatActivity() {
         }
     }
 
-    private fun getExampleNotes(): List<Note> {
+    private fun getExampleNotes(): ArrayList<Note> {
         val noteDao = NoteDao()
         noteDao.insert(Note("Nota", "Descrição"))
         return noteDao.getAll()
     }
 
+
+
     private fun initializeNotesRecyclerView(notes: List<Note>) {
         val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
-        notesRecyclerView.adapter = NotesAdapter(this, notes)
+
+        adapter = NotesAdapter(this, notes)
+
+        notesRecyclerView.adapter = adapter
     }
 }
