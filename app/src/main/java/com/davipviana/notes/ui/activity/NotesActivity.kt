@@ -21,6 +21,11 @@ class NotesActivity : AppCompatActivity() {
         initializeNewNoteClick()
     }
 
+    override fun onResume() {
+        initializeNotesRecyclerView(NoteDao().getAll())
+        super.onResume()
+    }
+
     private fun initializeNewNoteClick() {
         val newNoteTextView = findViewById<TextView>(R.id.notes_new_note)
         newNoteTextView.setOnClickListener {
@@ -30,9 +35,7 @@ class NotesActivity : AppCompatActivity() {
 
     private fun getExampleNotes(): List<Note> {
         val noteDao = NoteDao()
-        for (i in 1..10000) {
-            noteDao.insert(Note("Nota " + i.toString(), "Descrição " + i.toString()))
-        }
+        noteDao.insert(Note("Nota", "Descrição"))
         return noteDao.getAll()
     }
 
