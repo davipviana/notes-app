@@ -26,13 +26,16 @@ class NotesAdapter(
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
-
-        val titleText = holder.itemView.findViewById<TextView>(R.id.notes_item_title)
-        titleText.text = note.title
-
-        val descriptionText = holder.itemView.findViewById<TextView>(R.id.notes_item_description)
-        descriptionText.text = note.description
+        holder.bindNoteInfo(note)
     }
 
-    class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val titleTextView: TextView = itemView.findViewById(R.id.notes_item_title)
+        private val descriptionTextView: TextView = itemView.findViewById(R.id.notes_item_description)
+
+        fun bindNoteInfo(note: Note) {
+            titleTextView.text = note.title
+            descriptionTextView.text = note.description
+        }
+    }
 }

@@ -15,15 +15,19 @@ class NotesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
+        initializeNotesRecyclerView(getExampleNotes())
+    }
 
+    private fun getExampleNotes(): List<Note> {
         val noteDao = NoteDao()
-        for(i in 1..10000) {
+        for (i in 1..10000) {
             noteDao.insert(Note("Nota " + i.toString(), "Descrição " + i.toString()))
         }
+        return noteDao.getAll()
+    }
 
-
-        notesRecyclerView.adapter = NotesAdapter(this, noteDao.getAll())
-        notesRecyclerView.layoutManager = LinearLayoutManager(this)
+    private fun initializeNotesRecyclerView(notes: List<Note>) {
+        val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
+        notesRecyclerView.adapter = NotesAdapter(this, notes)
     }
 }
