@@ -14,50 +14,53 @@ class NotesActivity : AppCompatActivity() {
 
     private lateinit var adapter: NotesAdapter
 
-    private lateinit var notes: ArrayList<Note>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        notes = getExampleNotes()
-
-        initializeNotesRecyclerView(notes)
-
+        initializeNotesRecyclerView(NoteDao().getAll())
         initializeNewNoteClick()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == 1 && resultCode == 2 && data != null && data.hasExtra("note")) {
-            val newNote = data.getSerializableExtra("note") as Note
-
-            NoteDao().insert(newNote)
-            adapter.add(newNote)
+        if(isCreatedNoteResult(requestCode, resultCode, data)) {
+            addNote(data)
         }
 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun addNote(data: Intent?) {
+        val newNote = data?.getSerializableExtra(Constants.NOTE_KEY) as Note
+        NoteDao().insert(newNote)
+        adapter.add(newNote)
+    }
+
+    private fun isCreatedNoteResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        return isCreateNoteRequestCode(requestCode) &&
+                isCreatedNoteResultCode(resultCode) &&
+                hasNote(data)
+    }
+
+    private fun isCreatedNoteResultCode(resultCode: Int) = resultCode == Constants.RESULT_CODE_NOTE_CREATED
+
+    private fun isCreateNoteRequestCode(requestCode: Int) = requestCode == Constants.REQUEST_CODE_NEW_NOTE
+
+    private fun hasNote(data: Intent?) = data != null && data.hasExtra("note")
+
     private fun initializeNewNoteClick() {
         val newNoteTextView = findViewById<TextView>(R.id.notes_new_note)
         newNoteTextView.setOnClickListener {
-            startActivityForResult(Intent(this, NoteFormActivity::class.java), 1)
+            startActivityForResult(
+                Intent(this, NoteFormActivity::class.java),
+                Constants.REQUEST_CODE_NEW_NOTE
+            )
         }
     }
 
-    private fun getExampleNotes(): ArrayList<Note> {
-        val noteDao = NoteDao()
-        noteDao.insert(Note("Nota", "Descrição"))
-        return noteDao.getAll()
-    }
-
-
-
     private fun initializeNotesRecyclerView(notes: ArrayList<Note>) {
         val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
-
         adapter = NotesAdapter(this, notes)
-
         notesRecyclerView.adapter = adapter
     }
 }

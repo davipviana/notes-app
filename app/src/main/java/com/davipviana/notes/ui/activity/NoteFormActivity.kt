@@ -1,14 +1,12 @@
 package com.davipviana.notes.ui.activity
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
 import com.davipviana.notes.R
-import com.davipviana.notes.dao.NoteDao
 import com.davipviana.notes.model.Note
 
 class NoteFormActivity : AppCompatActivity() {
@@ -24,20 +22,26 @@ class NoteFormActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item?.itemId == R.id.note_form_menu_ic_save_note) {
-
-            val titleEditText = findViewById<EditText>(R.id.note_form_title)
-            val descriptionEditText = findViewById<EditText>(R.id.note_form_description)
-
-            val newNote = Note(titleEditText.text.toString(), descriptionEditText.text.toString())
-            val insertResult = Intent()
-            insertResult.putExtra("note", newNote)
-
-            setResult(2, insertResult)
-
+        if (isSaveAction(item)) {
+            val newNote = createNoteFromInputs()
+            returnCreatedNote(newNote)
             finish()
         }
 
         return super.onOptionsItemSelected(item)
     }
+
+    private fun returnCreatedNote(newNote: Note) {
+        val insertResult = Intent()
+        insertResult.putExtra(Constants.NOTE_KEY, newNote)
+        setResult(Constants.RESULT_CODE_NOTE_CREATED, insertResult)
+    }
+
+    private fun createNoteFromInputs(): Note {
+        val titleEditText = findViewById<EditText>(R.id.note_form_title)
+        val descriptionEditText = findViewById<EditText>(R.id.note_form_description)
+        return Note(titleEditText.text.toString(), descriptionEditText.text.toString())
+    }
+
+    private fun isSaveAction(item: MenuItem?) = item?.itemId == R.id.note_form_menu_ic_save_note
 }
