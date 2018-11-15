@@ -1,12 +1,13 @@
 package com.davipviana.notes.ui.activity
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ListView
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import com.davipviana.notes.R
 import com.davipviana.notes.dao.NoteDao
 import com.davipviana.notes.model.Note
-import com.davipviana.notes.ui.adapter.NotesAdapter
+import com.davipviana.notes.ui.recyclerview.adapter.NotesAdapter
 
 class NotesActivity : AppCompatActivity() {
 
@@ -14,11 +15,15 @@ class NotesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        val notesListView = findViewById<ListView>(R.id.notes_list)
+        val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
 
         val noteDao = NoteDao()
-        noteDao.insert(Note("Primeira nota", "Primeira descrição"))
+        for(i in 1..10000) {
+            noteDao.insert(Note("Nota " + i.toString(), "Descrição " + i.toString()))
+        }
 
-        notesListView.adapter = NotesAdapter(this, noteDao.getAll())
+
+        notesRecyclerView.adapter = NotesAdapter(this, noteDao.getAll())
+        notesRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 }
