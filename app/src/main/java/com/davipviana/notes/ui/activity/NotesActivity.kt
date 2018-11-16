@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.widget.TextView
+import android.widget.Toast
 import com.davipviana.notes.R
 import com.davipviana.notes.dao.NoteDao
 import com.davipviana.notes.model.Note
 import com.davipviana.notes.ui.recyclerview.adapter.NotesAdapter
+import com.davipviana.notes.ui.recyclerview.adapter.OnItemClickListener
 
 class NotesActivity : AppCompatActivity() {
 
@@ -61,6 +63,13 @@ class NotesActivity : AppCompatActivity() {
     private fun initializeNotesRecyclerView(notes: ArrayList<Note>) {
         val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
         adapter = NotesAdapter(this, notes)
+
+        adapter.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick() {
+                Toast.makeText(this@NotesActivity, "viewholder na activity", Toast.LENGTH_LONG).show()
+            }
+        })
+
         notesRecyclerView.adapter = adapter
     }
 }
