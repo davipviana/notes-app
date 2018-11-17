@@ -17,11 +17,17 @@ import com.davipviana.notes.ui.recyclerview.helper.callback.NoteItemTouchHelperC
 
 class NotesActivity : AppCompatActivity() {
 
+    companion object {
+        const val APPBAR_TITLE: String = "Notas"
+    }
+
     private lateinit var adapter: NotesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
+
+        title = APPBAR_TITLE
 
         initializeNotesRecyclerView(getNotes())
         initializeNewNoteClick()

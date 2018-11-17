@@ -7,23 +7,30 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
-import android.widget.TextView
 import com.davipviana.notes.R
 import com.davipviana.notes.model.Note
 
 class NoteFormActivity : AppCompatActivity() {
+    companion object {
+        const val APPBAR_TITLE_INSERT: String = "Insere nota"
+        const val APPBAR_TITLE_UPDATE: String = "Altera nota"
+    }
+
     private var receivedPosition: Int = Constants.INVALID_POSITION
-    private lateinit var title: EditText
-    private lateinit var description: EditText
+    private lateinit var titleEditText: EditText
+    private lateinit var descriptionEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_form)
 
-        title = findViewById(R.id.note_form_title)
-        description = findViewById(R.id.note_form_description)
+        title = APPBAR_TITLE_INSERT
+
+        titleEditText = findViewById(R.id.note_form_title)
+        descriptionEditText = findViewById(R.id.note_form_description)
 
         if(intent.hasExtra(Constants.NOTE_KEY)) {
+            title = APPBAR_TITLE_UPDATE
             val receivedNote = intent.getSerializableExtra(Constants.NOTE_KEY) as Note
             receivedPosition = intent.getIntExtra(Constants.POSITION_KEY, Constants.INVALID_POSITION)
 
@@ -32,8 +39,8 @@ class NoteFormActivity : AppCompatActivity() {
     }
 
     private fun loadNoteInfo(note: Note) {
-        title.setText(note.title)
-        description.setText(note.description)
+        titleEditText.setText(note.title)
+        descriptionEditText.setText(note.description)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,7 +66,7 @@ class NoteFormActivity : AppCompatActivity() {
     }
 
     private fun createNoteFromInputs(): Note {
-        return Note(title.text.toString(), description.text.toString())
+        return Note(titleEditText.text.toString(), descriptionEditText.text.toString())
     }
 
     private fun isSaveAction(item: MenuItem?) = item?.itemId == R.id.note_form_menu_ic_save_note
