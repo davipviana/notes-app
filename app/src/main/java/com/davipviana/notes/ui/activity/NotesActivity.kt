@@ -106,8 +106,7 @@ class NotesActivity : AppCompatActivity() {
         val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
         initializeAdapter(notes, notesRecyclerView)
 
-        val itemTouchHelper = ItemTouchHelper(NoteItemTouchHelperCallback(adapter))
-        itemTouchHelper.attachToRecyclerView(notesRecyclerView)
+        initializeItemTouchHelper(notesRecyclerView)
     }
 
     private fun initializeAdapter(notes: ArrayList<Note>, notesRecyclerView: RecyclerView) {
@@ -124,5 +123,10 @@ class NotesActivity : AppCompatActivity() {
         })
 
         notesRecyclerView.adapter = adapter
+    }
+
+    private fun initializeItemTouchHelper(notesRecyclerView: RecyclerView?) {
+        val itemTouchHelper = ItemTouchHelper(NoteItemTouchHelperCallback(adapter))
+        itemTouchHelper.attachToRecyclerView(notesRecyclerView)
     }
 }

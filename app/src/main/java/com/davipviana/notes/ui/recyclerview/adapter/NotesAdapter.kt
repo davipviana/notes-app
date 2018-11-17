@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.davipviana.notes.R
+import com.davipviana.notes.dao.NoteDao
 import com.davipviana.notes.model.Note
 import com.davipviana.notes.ui.recyclerview.adapter.listener.OnItemClickListener
+import java.util.*
 
 class NotesAdapter(
     val context: Context,
@@ -48,6 +50,11 @@ class NotesAdapter(
 
     fun remove(position: Int) {
         notes.removeAt(position)
+        notifyDataSetChanged()
+    }
+
+    fun swap(start: Int, end: Int) {
+        Collections.swap(notes, start, end)
         notifyDataSetChanged()
     }
 
