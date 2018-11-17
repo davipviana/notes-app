@@ -50,12 +50,12 @@ class NotesAdapter(
 
     fun remove(position: Int) {
         notes.removeAt(position)
-        notifyDataSetChanged()
+        notifyItemRemoved(position)
     }
 
     fun swap(start: Int, end: Int) {
         Collections.swap(notes, start, end)
-        notifyDataSetChanged()
+        notifyItemMoved(start, end)
     }
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -47,8 +47,6 @@ class NotesActivity : AppCompatActivity() {
 
                 if (isValidPosition(receivedPosition)) {
                     update(receivedPosition, receivedNote)
-                } else {
-                    Toast.makeText(this, "Erro ao alterar nota", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -58,13 +56,7 @@ class NotesActivity : AppCompatActivity() {
     }
 
     private fun getNotes(): ArrayList<Note> {
-        val noteDao = NoteDao()
-
-        for (i in 1..10) {
-            noteDao.insert(Note("Titulo " + i.toString(), "Descrição " + i.toString()))
-        }
-
-        return noteDao.getAll()
+        return NoteDao().getAll()
     }
 
     private fun update(position: Int, note: Note) {
