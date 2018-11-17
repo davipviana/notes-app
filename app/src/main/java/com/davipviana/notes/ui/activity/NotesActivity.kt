@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.widget.TextView
 import android.widget.Toast
 import com.davipviana.notes.R
@@ -12,6 +13,7 @@ import com.davipviana.notes.dao.NoteDao
 import com.davipviana.notes.model.Note
 import com.davipviana.notes.ui.recyclerview.adapter.NotesAdapter
 import com.davipviana.notes.ui.recyclerview.adapter.listener.OnItemClickListener
+import com.davipviana.notes.ui.recyclerview.helper.callback.NoteItemTouchHelperCallback
 
 class NotesActivity : AppCompatActivity() {
 
@@ -23,16 +25,6 @@ class NotesActivity : AppCompatActivity() {
 
         initializeNotesRecyclerView(getNotes())
         initializeNewNoteClick()
-    }
-
-    private fun getNotes(): ArrayList<Note> {
-        val noteDao = NoteDao()
-
-        for (i in 1..10) {
-            noteDao.insert(Note("Titulo " + i.toString(), "Descrição " + i.toString()))
-        }
-
-        return noteDao.getAll()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -57,6 +49,16 @@ class NotesActivity : AppCompatActivity() {
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun getNotes(): ArrayList<Note> {
+        val noteDao = NoteDao()
+
+        for (i in 1..10) {
+            noteDao.insert(Note("Titulo " + i.toString(), "Descrição " + i.toString()))
+        }
+
+        return noteDao.getAll()
     }
 
     private fun update(position: Int, note: Note) {
@@ -102,6 +104,13 @@ class NotesActivity : AppCompatActivity() {
 
     private fun initializeNotesRecyclerView(notes: ArrayList<Note>) {
         val notesRecyclerView = findViewById<RecyclerView>(R.id.notes_list)
+        initializeAdapter(notes, notesRecyclerView)
+
+        val itemTouchHelper = ItemTouchHelper(NoteItemTouchHelperCallback(adapter))
+        itemTouchHelper.attachToRecyclerView(notesRecyclerView)
+    }
+
+    private fun initializeAdapter(notes: ArrayList<Note>, notesRecyclerView: RecyclerView) {
         adapter = NotesAdapter(this, notes)
 
         adapter.setOnItemClickListener(object : OnItemClickListener {

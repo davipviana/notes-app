@@ -46,6 +46,11 @@ class NotesAdapter(
         notifyDataSetChanged()
     }
 
+    fun remove(position: Int) {
+        notes.removeAt(position)
+        notifyDataSetChanged()
+    }
+
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.notes_item_title)
         private val descriptionTextView: TextView = itemView.findViewById(R.id.notes_item_description)
