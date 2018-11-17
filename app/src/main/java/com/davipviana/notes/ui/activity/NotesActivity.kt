@@ -1,5 +1,6 @@
 package com.davipviana.notes.ui.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,7 +11,7 @@ import com.davipviana.notes.R
 import com.davipviana.notes.dao.NoteDao
 import com.davipviana.notes.model.Note
 import com.davipviana.notes.ui.recyclerview.adapter.NotesAdapter
-import com.davipviana.notes.ui.recyclerview.adapter.OnItemClickListener
+import com.davipviana.notes.ui.recyclerview.adapter.listener.OnItemClickListener
 
 class NotesActivity : AppCompatActivity() {
 
@@ -20,17 +21,57 @@ class NotesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        initializeNotesRecyclerView(NoteDao().getAll())
+        initializeNotesRecyclerView(getNotes())
         initializeNewNoteClick()
     }
 
+    private fun getNotes(): ArrayList<Note> {
+        val noteDao = NoteDao()
+
+        for (i in 1..10) {
+            noteDao.insert(Note("Titulo " + i.toString(), "Descrição " + i.toString()))
+        }
+
+        return noteDao.getAll()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(isCreatedNoteResult(requestCode, resultCode, data)) {
-            addNote(data)
+        if (isCreatedNoteResult(requestCode, data)) {
+            if (isSuccessfulResult(resultCode)) {
+                addNote(data)
+            }
+        }
+
+        if (isEditedNoteResult(requestCode, data)) {
+            if (isSuccessfulResult(resultCode)) {
+                val receivedNote = data?.getSerializableExtra(Constants.NOTE_KEY) as Note
+                val receivedPosition = data.getIntExtra(Constants.POSITION_KEY, Constants.INVALID_POSITION)
+
+                if (isValidPosition(receivedPosition)) {
+                    update(receivedPosition, receivedNote)
+                } else {
+                    Toast.makeText(this, "Erro ao alterar nota", Toast.LENGTH_LONG).show()
+                }
+            }
+
         }
 
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    private fun update(position: Int, note: Note) {
+        NoteDao().update(position, note)
+        adapter.update(position, note)
+    }
+
+    private fun isValidPosition(receivedPosition: Int) = receivedPosition > Constants.INVALID_POSITION
+
+    private fun isEditedNoteResult(requestCode: Int, data: Intent?): Boolean {
+        return isEditedNoteRequestCode(requestCode) &&
+                hasNote(data)
+    }
+
+    private fun isEditedNoteRequestCode(requestCode: Int) = requestCode == Constants.REQUEST_CODE_EDIT_NOTE
 
     private fun addNote(data: Intent?) {
         val newNote = data?.getSerializableExtra(Constants.NOTE_KEY) as Note
@@ -38,13 +79,12 @@ class NotesActivity : AppCompatActivity() {
         adapter.add(newNote)
     }
 
-    private fun isCreatedNoteResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+    private fun isCreatedNoteResult(requestCode: Int, data: Intent?): Boolean {
         return isCreateNoteRequestCode(requestCode) &&
-                isCreatedNoteResultCode(resultCode) &&
                 hasNote(data)
     }
 
-    private fun isCreatedNoteResultCode(resultCode: Int) = resultCode == Constants.RESULT_CODE_NOTE_CREATED
+    private fun isSuccessfulResult(resultCode: Int) = resultCode == Activity.RESULT_OK
 
     private fun isCreateNoteRequestCode(requestCode: Int) = requestCode == Constants.REQUEST_CODE_NEW_NOTE
 
@@ -65,8 +105,12 @@ class NotesActivity : AppCompatActivity() {
         adapter = NotesAdapter(this, notes)
 
         adapter.setOnItemClickListener(object : OnItemClickListener {
-            override fun onItemClick() {
-                Toast.makeText(this@NotesActivity, "viewholder na activity", Toast.LENGTH_LONG).show()
+            override fun onItemClick(note: Note, position: Int) {
+                val openNoteFormIntent = Intent(this@NotesActivity, NoteFormActivity::class.java)
+                openNoteFormIntent.putExtra(Constants.NOTE_KEY, note)
+                openNoteFormIntent.putExtra(Constants.POSITION_KEY, position)
+
+                startActivityForResult(openNoteFormIntent, Constants.REQUEST_CODE_EDIT_NOTE)
             }
         })
 
